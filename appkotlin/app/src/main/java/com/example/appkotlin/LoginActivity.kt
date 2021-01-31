@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initDb(database: SQLiteDatabase){
-        database.execSQL("create table users(id, name, lastname)")
+        database.execSQL("create table users(id, name, lastname, pin)")
     }
 
     private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
@@ -77,7 +77,7 @@ class LoginActivity : AppCompatActivity() {
                     config.put("id", user.get("id"))
                     config.put("name", user.get("name"))
                     config.put("lastname", user.get("lastname"))
-                    val database: SQLiteDatabase = getDatabase()
+                    val database: SQLiteDatabase = getDb()
                     insertConfigToDb(database, config)
                     // changer activity
                 }
