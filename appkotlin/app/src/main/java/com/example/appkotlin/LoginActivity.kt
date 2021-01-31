@@ -1,18 +1,19 @@
 package com.example.appkotlin
 
-import androidx.appcompat.app.AppCompatActivity
+import android.database.Cursor
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import com.android.volley.*
-import com.android.volley.toolbox.*
+import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_login.*
+import net.sqlcipher.database.SQLiteDatabase
 import org.json.JSONArray
 import org.json.JSONObject
-
-import net.sqlcipher.database.SQLiteDatabase
 
 
 class LoginActivity : AppCompatActivity() {
@@ -20,23 +21,47 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        SQLiteDatabase.loadLibs(this)
-        val databaseFile = getDatabasePath("demo.db")
-        if(databaseFile.exists()) databaseFile.delete()
-        databaseFile.mkdirs()
-        databaseFile.delete()
-        val database = SQLiteDatabase.openOrCreateDatabase(databaseFile, "test123", null)
-        database.execSQL("create table t1(a, b)")
-        database.execSQL("insert into t1(a, b) values(?, ?)",
-            arrayOf<Any>("one for the money", "two for the show")
-        )
-
         Log.i(TAG, "START")
+
+        val database:SQLiteDatabase = getDb()
+        initDb(database)
 
     }
 
+    ////////// Constantes //////////
+
     private var TAG:String = "LOGIN_MESSAGE"
     private var ERROR_FETCH:String = "error fetch"
+    private val URL_CONFIG = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
+    private val URL_ACCOUNTS = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
+
+    ////////// Database //////////
+
+    private fun getDb(): SQLiteDatabase {
+        SQLiteDatabase.loadLibs(this)
+        val databaseFile = getDatabasePath("demo.db")
+        return SQLiteDatabase.openOrCreateDatabase(databaseFile, "test123", null)
+    }
+
+    private fun initDb(database: SQLiteDatabase){
+        database.execSQL("create table users(id, name, lastname)")
+    }
+
+    private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
+        database.execSQL("insert into users(id, name, lastname) values(?, ?, ?)",
+                arrayOf<Any>(config.get("id").toString().toInt(), config.get("name").toString(),config.get("lastname").toString())
+        )
+    }
+
+    private fun loadConfigFromDb(db: SQLiteDatabase):JSONObject{
+        val config:JSONObject = JSONObject()
+        val cursor: Cursor = db.rawQuery("select * from users", null)
+        return config
+    }
+
+
+
+    ////////// OnClick functions //////////
 
     fun onClickConnexion(button:View){
         checkCredentialsOnline(nameInput.text.toString(), lastnameInput.text.toString()) { user:JSONObject?, err:VolleyError? ->
@@ -48,14 +73,19 @@ class LoginActivity : AppCompatActivity() {
                 else{
                     loginMessage.text = "Good"
                     // save user info dans bdd
+                    val config: JSONObject = JSONObject()
+                    config.put("id", user.get("id"))
+                    config.put("name", user.get("name"))
+                    config.put("lastname", user.get("lastname"))
+                    val database: SQLiteDatabase = getDatabase()
+                    insertConfigToDb(database, config)
                     // changer activity
                 }
             }
         }
     }
 
-    private val url_config = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
-    val url_accounts = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
+    ////////// API request functions //////////
 
     // check user credentials, return user:JSONObject if ok, else return null
     private fun checkCredentialsOnline(name:String, lastname:String, cb:(user:JSONObject?, err:VolleyError?)->Unit){
@@ -63,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
 
         var ok:Boolean = false
 
-        val stringRequest = StringRequest(Request.Method.GET, url_config,
+        val stringRequest = StringRequest(Request.Method.GET, URL_CONFIG,
                 Response.Listener<String>{ response ->
                     val resStr:String = response.toString()
                     val user:JSONObject = JSONObject(resStr)
@@ -84,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
 
         lateinit var accounts: JSONArray
 
-        val stringRequest = StringRequest(Request.Method.GET, url_accounts,
+        val stringRequest = StringRequest(Request.Method.GET, URL_ACCOUNTS,
                 Response.Listener<String> { response ->
                     val resStr:String = response.toString()
                     accounts = JSONArray(resStr)
