@@ -2,6 +2,7 @@ package com.example.appkotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -38,44 +39,47 @@ class LoginActivity : AppCompatActivity() {
     private var ERROR_FETCH:String = "error fetch"
 
     fun onClickConnexion(button:View){
-        var user:JSONObject? = checkCredentialsOnline(nameInput.text.toString(), lastnameInput.text.toString())
-        if ((user!=null)){
-            loginMessage.text = "Good"
-            // save user info dans bdd
-            // changer activity
-        }
-        else if (user==null){
-            loginMessage.text = "Wrong credentials"
+        checkCredentialsOnline(nameInput.text.toString(), lastnameInput.text.toString()) { user:JSONObject?, err:VolleyError? ->
+            if (err!=null) loginMessage.text = ERROR_FETCH
+            else{
+                if ((user==null)){
+                    loginMessage.text = "Wrong credentials"
+                }
+                else{
+                    loginMessage.text = "Good"
+                    // save user info dans bdd
+                    // changer activity
+                }
+            }
         }
     }
 
-    val url_config = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
+    private val url_config = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
     val url_accounts = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
 
     // check user credentials, return user:JSONObject if ok, else return null
-    private fun checkCredentialsOnline(name:String, lastname:String):JSONObject?{
+    private fun checkCredentialsOnline(name:String, lastname:String, cb:(user:JSONObject?, err:VolleyError?)->Unit){
         val queue = Volley.newRequestQueue(this)
 
-        var user:JSONObject? = null
         var ok:Boolean = false
 
         val stringRequest = StringRequest(Request.Method.GET, url_config,
                 Response.Listener<String>{ response ->
                     val resStr:String = response.toString()
-                    user = JSONObject(resStr)
-                    ok = (user!!.get(name).toString()==name) and (user!!.get(name).toString()==name)
+                    val user:JSONObject = JSONObject(resStr)
+                    ok = (user.get("name").toString()==name) and (user.get("lastname").toString()==lastname)
+                    if (ok) cb(user, null)
+                    else cb(null, null)
                 },
                 Response.ErrorListener { error ->
-                    Log.i(TAG, error.toString())
-                    loginMessage.text = ERROR_FETCH
+                    cb(null, error)
                 })
+
         queue.add(stringRequest)
-        queue.start()
-        return if (ok) user
-        else null
+        //queue.start()
     }
 
-    private fun findAccountsOnline():JSONArray{
+    private fun findAccountsOnline(cb:(accounts:JSONArray?, err:VolleyError?)->Unit){
         val queue = Volley.newRequestQueue(this)
 
         lateinit var accounts: JSONArray
@@ -84,25 +88,12 @@ class LoginActivity : AppCompatActivity() {
                 Response.Listener<String> { response ->
                     val resStr:String = response.toString()
                     accounts = JSONArray(resStr)
+                    cb(accounts, null)
                 },
-                Response.ErrorListener {
-                    Log.i(TAG, "error fetch")
+                Response.ErrorListener { error ->
+                    cb(null, error)
                 })
-        queue.add(stringRequest)
-        return accounts
-    }
 
-    fun findAccountsByAccountNameOnline(account_name:String): JSONArray {
-        val accounts:JSONArray = findAccountsOnline()
-        lateinit var accountsFound: JSONArray
-        var i = 0
-        while((i<accounts.length())){
-            var account: JSONObject = accounts.getJSONObject(i)
-            if (account.get("account_name").toString() == account_name){
-                accountsFound.put(account)
-            }
-            i+=1
-        }
-        return accountsFound
+        queue.add(stringRequest)
     }
 }
