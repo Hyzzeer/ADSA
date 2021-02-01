@@ -53,8 +53,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
-        database.execSQL("insert into users(id, name, lastname) values(?, ?, ?)",
-                arrayOf<Any>(config.get("id").toString().toInt(), config.get("name").toString(),config.get("lastname").toString())
+        database.execSQL("insert into users(id, name, lastname, pin) values(?, ?, ?, ?)",
+                arrayOf<Any>(config.get("id").toString(), config.get("name").toString(),config.get("lastname").toString(), pin)
         )
     }
 
