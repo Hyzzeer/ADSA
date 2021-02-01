@@ -4,6 +4,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.Response
@@ -11,6 +12,8 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activty_pin.*
+import kotlinx.android.synthetic.main.activty_pin.view.*
 import net.sqlcipher.database.SQLiteDatabase
 import org.json.JSONArray
 import org.json.JSONObject
@@ -32,8 +35,9 @@ class LoginActivity : AppCompatActivity() {
 
     private var TAG:String = "LOGIN_MESSAGE"
     private var ERROR_FETCH:String = "error fetch"
-    private val URL_CONFIG = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
-    private val URL_ACCOUNTS = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
+    private val URL_CONFIG:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
+    private val URL_ACCOUNTS:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
+    private var pin:String = ""
 
     ////////// Database //////////
 
@@ -70,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
 
     ////////// OnClick functions //////////
 
-    fun onClickConnexion(button:View){
+    fun onClickConnexion(v:View){
         checkCredentialsOnline(nameInput.text.toString(), lastnameInput.text.toString()) { user:JSONObject?, err:VolleyError? ->
             if (err!=null) loginMessage.text = ERROR_FETCH
             else{
@@ -89,6 +93,23 @@ class LoginActivity : AppCompatActivity() {
                     // changer activity
                     setContentView(R.layout.activty_pin);
                 }
+            }
+        }
+    }
+
+    fun onClickPinButton(v: View){
+        val button = v as Button // cast view en button
+        val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
+        if (!button.text.isNullOrEmpty()){
+            if ((pin.length>=0) and (pin.length<4)){
+                pin += button.text.toString()
+                radioArray[pin.length-1].isChecked = true
+            }
+        }
+        if (button.id == buttonDelete.id){
+            if ((pin.length>0) and (pin.length<=4)) {
+                radioArray[pin.length - 1].isChecked = false
+                pin = pin.slice(0 until pin.length - 1)
             }
         }
     }
