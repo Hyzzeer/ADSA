@@ -1,5 +1,6 @@
 package com.example.appkotlin
 
+import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +14,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activty_pin.*
-import kotlinx.android.synthetic.main.activty_pin.view.*
 import net.sqlcipher.database.SQLiteDatabase
 import org.json.JSONArray
 import org.json.JSONObject
@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
         Log.i(TAG, "START")
 
         val database:SQLiteDatabase = getDb()
-        initDb(database)
+        logout(database)
 
     }
 
@@ -38,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
     private val URL_CONFIG:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
     private val URL_ACCOUNTS:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
     private var pin:String = ""
+    private val config: JSONObject = JSONObject()
 
     ////////// Database //////////
 
@@ -50,6 +51,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initDb(database: SQLiteDatabase){
         database.execSQL("create table if not exists users(id, name, lastname, pin)")
+    }
+
+    private fun logout(database: SQLiteDatabase){
+        database.execSQL("drop table if exists users");
+        initDb(database)
     }
 
     private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
@@ -84,12 +90,11 @@ class LoginActivity : AppCompatActivity() {
                 else{
                     loginMessage.text = "Good"
                     // save user info dans bdd
-                    val config: JSONObject = JSONObject()
                     config.put("id", user.get("id"))
                     config.put("name", user.get("name"))
                     config.put("lastname", user.get("lastname"))
-                    val database: SQLiteDatabase = getDb()
-                    insertConfigToDb(database, config)
+                    //val database: SQLiteDatabase = getDb()
+                    //insertConfigToDb(database, config)
                     // changer activity
                     setContentView(R.layout.activty_pin);
                 }
@@ -110,6 +115,18 @@ class LoginActivity : AppCompatActivity() {
             if ((pin.length>0) and (pin.length<=4)) {
                 radioArray[pin.length - 1].isChecked = false
                 pin = pin.slice(0 until pin.length - 1)
+            }
+        }
+        if (button.id == buttonEmpty.id){
+            if (pin.length==4) {
+                config.put("pin", pin)
+                val database: SQLiteDatabase = getDb()
+                insertConfigToDb(database, config)
+                val intent = Intent(this, SplashActivity::class.java)
+                startActivity(intent)
+            }
+            else{
+                pinMessage.text = "put 4 pins"
             }
         }
     }
