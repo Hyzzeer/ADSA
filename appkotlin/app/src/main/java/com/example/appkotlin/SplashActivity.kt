@@ -1,5 +1,6 @@
 package com.example.appkotlin
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.database.Cursor
 import android.database.SQLException
@@ -40,36 +41,47 @@ class SplashActivity : AppCompatActivity() {
 
     private var TAG:String = "LOGIN_MESSAGE"
     private var pin:String = ""
+    private var COUNT_MAX:Int = 3
 
     ////////// On ck=lc //////////
 
     fun onClickPinButton(v: View){
+        Log.i(TAG, "Splash")
+        val db = getDb()
         val button = v as Button // cast view en button
         val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
-        if (!button.text.isNullOrEmpty()){
-            if ((pin.length>=0) and (pin.length<4)){
-                pin += button.text.toString()
-                radioArray[pin.length-1].isChecked = true
-            }
-        }
+
         if (button.id == buttonDelete.id){
             if ((pin.length>0) and (pin.length<=4)) {
                 radioArray[pin.length - 1].isChecked = false
                 pin = pin.slice(0 until pin.length - 1)
             }
         }
-        if (button.id == buttonEmpty.id){
+        else if (button.id == buttonSubmit.id){
             if (pin.length==4) {
-                val db = getDb()
                 val pinUser:String? = getPinFromDb(db)
                 if (pin == pinUser){
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 }
-                else pinMessage.text = "pin didn't match"
+                else {
+                    COUNT_MAX--
+                    pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
+                }
+                if(COUNT_MAX==0){
+                    logout(db)
+                    val intent = Intent(this, SplashActivity::class.java)
+                    startActivity(intent)
+                }
             }
             else{
                 pinMessage.text = "put 4 pins"
+            }
+        }
+        else if (!button.text.isNullOrEmpty()){
+            if ((pin.length>=0) and (pin.length<4)){
+                pin += button.text.toString()
+                radioArray[pin.length-1].isChecked = true
             }
         }
     }

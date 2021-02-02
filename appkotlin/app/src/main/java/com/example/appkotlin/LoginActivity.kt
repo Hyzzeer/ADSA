@@ -103,21 +103,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun onClickPinButton(v: View){
+        Log.i(TAG, "Login")
         val button = v as Button // cast view en button
         val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
-        if (!button.text.isNullOrEmpty()){
-            if ((pin.length>=0) and (pin.length<4)){
-                pin += button.text.toString()
-                radioArray[pin.length-1].isChecked = true
-            }
-        }
+
         if (button.id == buttonDelete.id){
             if ((pin.length>0) and (pin.length<=4)) {
                 radioArray[pin.length - 1].isChecked = false
                 pin = pin.slice(0 until pin.length - 1)
             }
         }
-        if (button.id == buttonEmpty.id){
+        else if (button.id == buttonSubmit.id){
             if (pin.length==4) {
                 config.put("pin", pin)
                 val database: SQLiteDatabase = getDb()
@@ -127,6 +123,12 @@ class LoginActivity : AppCompatActivity() {
             }
             else{
                 pinMessage.text = "put 4 pins"
+            }
+        }
+        else if (!button.text.isNullOrEmpty()){
+            if ((pin.length>=0) and (pin.length<4)){
+                pin += button.text.toString()
+                radioArray[pin.length-1].isChecked = true
             }
         }
     }
