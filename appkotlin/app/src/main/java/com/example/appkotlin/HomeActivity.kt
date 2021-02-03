@@ -1,10 +1,15 @@
 package com.example.appkotlin
 
+import android.annotation.SuppressLint
 import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_home.*
 import net.sqlcipher.DatabaseUtils
 import okhttp3.*
 import java.io.IOException
@@ -62,6 +67,7 @@ class HomeActivity : AppCompatActivity() {
                 var a=response.body()?.string()
                 a=a.toString()
                 val account:JSONArray = JSONArray(a)
+                displayAccountsTable(account)
                 val db:SQLiteDatabase = getDb()
                 clearAccountTable(db)
 
@@ -75,10 +81,55 @@ class HomeActivity : AppCompatActivity() {
             }
         })
     }
+
+
         
 
     fun refresh(button:View){
        run("https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts")
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun displayAccountsTable(response : JSONArray){
+
+        var row : TableRow
+        var textRow : TextView
+
+        println(response)
+
+        var t : TableLayout = TableLayout(this)
+        //val lpT = TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        //t.LayoutParams = lpT
+
+        for (i in 0 until response.length()) {
+            val item = response.getJSONObject(i)
+            for (keyItem in item.keys()){
+                if (keyItem!="id"){
+                    val valueItem = item.get(keyItem)
+                    println(keyItem)
+
+                    row = TableRow(this)
+                    textRow = TextView(this)
+                    textRow.text = "$keyItem : $valueItem\n"
+                    row.addView(textRow)
+                    t.addView(row)
+                }
+
+            }
+
+        }
+
+        Thread(Runnable {
+            // performing some dummy time taking operation
+
+
+            // try to touch View of UI thread
+            this@HomeActivity.runOnUiThread(java.lang.Runnable {
+                scrollView1.addView(t)
+            })
+        }).start()
+
+
     }
 
 }

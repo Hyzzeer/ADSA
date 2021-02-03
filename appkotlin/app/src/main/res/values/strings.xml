@@ -9,9 +9,8 @@
     <string name="lastname">Lastname</string>
     <string name="mail_adress">Adresse mail</string>
     <string name="logo">logo</string>
-    <string name="main_account">Main account</string>
+    <string name="main_account">My accounts</string>
     <string name="textview">TextView</string>
-    <string name="amount">500 $</string>
     <string name="button_7">7</string>
     <string name="button_4">4</string>
     <string name="button_9">9</string>
