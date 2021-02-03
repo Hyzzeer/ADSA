@@ -24,6 +24,7 @@ class SplashActivity : AppCompatActivity() {
 
         val db: SQLiteDatabase = getDb()
 
+        //logout(db)
         val pinUser:String? = getPinFromDb(db)
         if (pinUser==null){
             // navigate to login

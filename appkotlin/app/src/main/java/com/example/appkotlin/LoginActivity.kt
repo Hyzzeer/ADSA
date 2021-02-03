@@ -26,9 +26,6 @@ class LoginActivity : AppCompatActivity() {
 
         Log.i(TAG, "START")
 
-        val database:SQLiteDatabase = getDb()
-        logout(database)
-
     }
 
     ////////// Constantes //////////
@@ -42,11 +39,10 @@ class LoginActivity : AppCompatActivity() {
 
     ////////// Database //////////
 
-    private fun getDb(): SQLiteDatabase {
+    private fun getDb(pin:String): SQLiteDatabase {
         SQLiteDatabase.loadLibs(this)
         val databaseFile = getDatabasePath("demo.db")
-        Log.i(TAG, databaseFile.toString())
-        return SQLiteDatabase.openOrCreateDatabase(databaseFile, "test123", null)
+        return SQLiteDatabase.openOrCreateDatabase(databaseFile, pin, null)
     }
 
     private fun initDb(database: SQLiteDatabase){
@@ -54,29 +50,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun logout(database: SQLiteDatabase){
-        database.execSQL("drop table if exists users");
-        initDb(database)
+        SQLiteDatabase.loadLibs(this)
+        val databaseFile = getDatabasePath("demo.db")
+        databaseFile.delete()
     }
 
     private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
-        database.execSQL("insert into users(id, name, lastname, pin) values(?, ?, ?, ?)",
-                arrayOf<Any>(config.get("id").toString(), config.get("name").toString(),config.get("lastname").toString(), pin)
+        database.execSQL("insert into users(id, name, lastname, pin) values(?, ?, ?)",
+                arrayOf<Any>(config.get("id").toString(), config.get("name").toString(),config.get("lastname").toString())
         )
     }
-
-    private fun insertPinToDb(database: SQLiteDatabase, pin:Int){
-        database.execSQL("insert into users(pin) values(?)",
-                arrayOf<Any>(pin)
-        )
-    }
-
-    private fun loadConfigFromDb(db: SQLiteDatabase):JSONObject{
-        val config:JSONObject = JSONObject()
-        val cursor: Cursor = db.rawQuery("select * from users", null)
-        return config
-    }
-
-
 
     ////////// OnClick functions //////////
 
@@ -93,8 +76,6 @@ class LoginActivity : AppCompatActivity() {
                     config.put("id", user.get("id"))
                     config.put("name", user.get("name"))
                     config.put("lastname", user.get("lastname"))
-                    //val database: SQLiteDatabase = getDb()
-                    //insertConfigToDb(database, config)
                     // changer activity
                     setContentView(R.layout.activty_pin);
                 }
@@ -115,8 +96,7 @@ class LoginActivity : AppCompatActivity() {
         }
         else if (button.id == buttonSubmit.id){
             if (pin.length==4) {
-                config.put("pin", pin)
-                val database: SQLiteDatabase = getDb()
+                val database: SQLiteDatabase = getDb(pin)
                 insertConfigToDb(database, config)
                 val intent = Intent(this, SplashActivity::class.java)
                 startActivity(intent)
