@@ -97,6 +97,17 @@ class HomeActivity : AppCompatActivity() {
 
         println(response)
 
+        Thread(Runnable {
+            // performing some dummy time taking operation
+
+
+            // try to touch View of UI thread
+            this@HomeActivity.runOnUiThread(java.lang.Runnable {
+                scrollView1.removeAllViews()
+            })
+        }).start()
+
+
         var t : TableLayout = TableLayout(this)
         //val lpT = TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         //t.LayoutParams = lpT
