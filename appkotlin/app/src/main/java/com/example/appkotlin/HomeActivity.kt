@@ -128,11 +128,6 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun displayAccountsTable(response : JSONArray?){
 
-        var row : TableRow
-        var textRow : TextView
-
-        println(response)
-
         Thread(Runnable {
             // performing some dummy time taking operation
 
@@ -148,12 +143,19 @@ class HomeActivity : AppCompatActivity() {
 
         for (i in 0 until response!!.length()) {
             val item = response.getJSONObject(i)
+
+            var row : TableRow = TableRow(this)
+            var breaker : TextView = TextView(this)
+            breaker.text = "-----------------------------------------------------------"
+            row.addView(breaker)
+            t.addView(row)
+
             for (keyItem in item.keys()){
                 if (keyItem!="id"){
                     val valueItem = item.get(keyItem)
 
-                    row = TableRow(this)
-                    textRow = TextView(this)
+                    var row : TableRow = TableRow(this)
+                    var textRow : TextView = TextView(this)
                     textRow.text = "$keyItem : $valueItem\n"
                     row.addView(textRow)
                     t.addView(row)
