@@ -12,6 +12,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
+
 class HomeActivity : AppCompatActivity() {
 
     private var TAG:String = "LOGIN_MESSAGE"
@@ -25,24 +26,28 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initDb(database: SQLiteDatabase){
-        database.execSQL("create table if not exists accountsAndAmounts(account, amount)")
+        database.execSQL("create table if not exists accountsAndAmounts(id,account_name, amount, iban, currency)")
+    }
+    private fun clearAccountTable(database: SQLiteDatabase){
+        database.execSQL("delete from accountsAndAmounts")
     }
     private fun insertAccountToDb(database: SQLiteDatabase, config:JSONObject){
-        database.execSQL("insert into accountsAndAmounts(account, amount) values(?, ?)",
-                arrayOf<Any>(config.get("account").toString(), config.get("amount").toString())
+        database.execSQL("insert into accountsAndAmounts(id,account_name, amount, iban, currency) values(?, ?, ? ,? ,?)",
+                arrayOf<Any>(config.get("id").toString(),config.get("account_name").toString(), config.get("amount").toString(),config.get("iban").toString(),config.get("currency").toString())
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        val database:SQLiteDatabase = getDb()
+        initDb(database)
+
     }
     private val client = OkHttpClient()
 
     private fun run(url: String) {
-
-        //var url2= URL("https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts").readText()
-        //Log.d("url", url2)
 
         val request = Request.Builder()
             .url(url)
@@ -53,11 +58,19 @@ class HomeActivity : AppCompatActivity() {
             override fun onResponse(call:Call, response:Response) {
                 var a=response.body()?.string()
                 a=a.toString()
-                a=a.dropLast(1)
-                a=a.drop(1)
-                val account:JSONObject = JSONObject(a)
 
-                println(account)
+                val account:JSONArray = JSONArray(a)
+
+                for (i in 0 until account.length()) {
+                    val item = account.getJSONObject(i)
+                    val database:SQLiteDatabase = getDb()
+                    clearAccountTable(database)
+                    insertAccountToDb(database,item)
+                    println("done")
+                }
+
+
+
 
             }
 
@@ -66,7 +79,6 @@ class HomeActivity : AppCompatActivity() {
 
     }
         
-
 
     fun refresh(button:View){
        run("https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts")
