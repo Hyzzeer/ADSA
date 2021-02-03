@@ -97,6 +97,7 @@ class LoginActivity : AppCompatActivity() {
         else if (button.id == buttonSubmit.id){
             if (pin.length==4) {
                 val database: SQLiteDatabase = getDb(pin)
+                initDb(database)
                 insertConfigToDb(database, config)
                 val intent = Intent(this, SplashActivity::class.java)
                 startActivity(intent)
