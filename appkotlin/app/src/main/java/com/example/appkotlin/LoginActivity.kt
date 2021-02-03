@@ -46,17 +46,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initDb(database: SQLiteDatabase){
-        database.execSQL("create table if not exists users(id, name, lastname, pin)")
+        database.execSQL("create table if not exists users(id, name, lastname)")
     }
 
-    private fun logout(database: SQLiteDatabase){
+    private fun logout(){
         SQLiteDatabase.loadLibs(this)
         val databaseFile = getDatabasePath("demo.db")
         databaseFile.delete()
     }
 
     private fun insertConfigToDb(database: SQLiteDatabase, config:JSONObject){
-        database.execSQL("insert into users(id, name, lastname, pin) values(?, ?, ?)",
+        database.execSQL("insert into users(id, name, lastname) values(?, ?, ?)",
                 arrayOf<Any>(config.get("id").toString(), config.get("name").toString(),config.get("lastname").toString())
         )
     }
@@ -135,23 +135,5 @@ class LoginActivity : AppCompatActivity() {
 
         queue.add(stringRequest)
         //queue.start()
-    }
-
-    private fun findAccountsOnline(cb:(accounts:JSONArray?, err:VolleyError?)->Unit){
-        val queue = Volley.newRequestQueue(this)
-
-        lateinit var accounts: JSONArray
-
-        val stringRequest = StringRequest(Request.Method.GET, URL_ACCOUNTS,
-                Response.Listener<String> { response ->
-                    val resStr:String = response.toString()
-                    accounts = JSONArray(resStr)
-                    cb(accounts, null)
-                },
-                Response.ErrorListener { error ->
-                    cb(null, error)
-                })
-
-        queue.add(stringRequest)
     }
 }

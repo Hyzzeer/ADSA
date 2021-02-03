@@ -22,21 +22,36 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_splash)
 
-        val db: SQLiteDatabase = getDb()
+        //val db: SQLiteDatabase = getDb()
+        // val pinUser:String? = getPinFromDb(db)
+        // if (pinUser==null){
+            // navigate to login
+            // Log.i(TAG,"navigate to login")
+            // val intent = Intent(this, LoginActivity::class.java)
+            // startActivity(intent)
+        // }
+        // else {
+            // navigate to put your secret pin
+            // Log.i(TAG,"put your secret pin")
+            // setContentView(R.layout.activty_pin);
+        //}
 
-        //logout(db)
-        val pinUser:String? = getPinFromDb(db)
-        if (pinUser==null){
+        logout()
+        if (!isDbExist()){
             // navigate to login
             Log.i(TAG,"navigate to login")
+
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        else {
+        else{
             // navigate to put your secret pin
             Log.i(TAG,"put your secret pin")
+
             setContentView(R.layout.activty_pin);
         }
+
+
     }
 
     ////////// OnClick functions //////////
@@ -49,7 +64,6 @@ class SplashActivity : AppCompatActivity() {
 
     fun onClickPinButton(v: View){
         Log.i(TAG, "Splash")
-        val db = getDb()
         val button = v as Button // cast view en button
         val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
 
@@ -61,17 +75,27 @@ class SplashActivity : AppCompatActivity() {
         }
         else if (button.id == buttonSubmit.id){
             if (pin.length==4) {
-                val pinUser:String? = getPinFromDb(db)
-                if (pin == pinUser){
+                val db = getDb(pin)
+                if (db.isOpen){
                     val intent = Intent(this, HomeActivity::class.java)
+                    intent.putExtra("pin", pin)
                     startActivity(intent)
                 }
-                else {
+                else{
                     COUNT_MAX--
                     pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
                 }
+                //val pinUser:String? = getPinFromDb(db)
+                //if (pin == pinUser){
+                    // val intent = Intent(this, HomeActivity::class.java)
+                    // startActivity(intent)
+                // }
+                // else {
+                    // COUNT_MAX--
+                    // pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
+                // }
                 if(COUNT_MAX==0){
-                    logout(db)
+                    logout()
                     val intent = Intent(this, SplashActivity::class.java)
                     startActivity(intent)
                 }
@@ -90,20 +114,26 @@ class SplashActivity : AppCompatActivity() {
 
     ////////// Database //////////
 
-    private fun getDb(): SQLiteDatabase {
+    private fun isDbExist():Boolean{
         SQLiteDatabase.loadLibs(this)
         val databaseFile = getDatabasePath("demo.db")
-        Log.i(TAG, databaseFile.toString())
-        return SQLiteDatabase.openOrCreateDatabase(databaseFile, "test123", null)
+        return databaseFile.exists()
+    }
+
+    private fun getDb(pin:String): SQLiteDatabase {
+        SQLiteDatabase.loadLibs(this)
+        val databaseFile = getDatabasePath("demo.db")
+        return SQLiteDatabase.openOrCreateDatabase(databaseFile, pin, null)
     }
 
     private fun initDb(database: SQLiteDatabase){
-        database.execSQL("create table if not exists users(id, name, lastname, pin)")
+        database.execSQL("create table if not exists users(id, name, lastname)")
     }
 
-    private fun logout(database: SQLiteDatabase){
-        database.execSQL("drop table if exists users");
-        initDb(database)
+    private fun logout(){
+        SQLiteDatabase.loadLibs(this)
+        val databaseFile = getDatabasePath("demo.db")
+        databaseFile.delete()
     }
 
 
@@ -120,10 +150,4 @@ class SplashActivity : AppCompatActivity() {
             null
         }
     }
-
-    private fun checkPinWithDb(database: SQLiteDatabase, pin:Int):Boolean{
-        return true
-    }
-
-
 }
