@@ -1,9 +1,11 @@
 package com.example.appkotlin
 
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import net.sqlcipher.DatabaseUtils
 import okhttp3.*
 import java.io.IOException
 import java.net.URL
@@ -29,6 +31,7 @@ class HomeActivity : AppCompatActivity() {
         database.execSQL("create table if not exists accountsAndAmounts(id,account_name, amount, iban, currency)")
     }
     private fun clearAccountTable(database: SQLiteDatabase){
+
         database.execSQL("delete from accountsAndAmounts")
     }
     private fun insertAccountToDb(database: SQLiteDatabase, config:JSONObject){
@@ -48,35 +51,29 @@ class HomeActivity : AppCompatActivity() {
     private val client = OkHttpClient()
 
     private fun run(url: String) {
-
         val request = Request.Builder()
             .url(url)
             .build()
         client.newCall(request).enqueue(object : Callback{
-            override fun onFailure(call: Call, e:IOException){}
 
+            override fun onFailure(call: Call, e:IOException){}
             override fun onResponse(call:Call, response:Response) {
+
                 var a=response.body()?.string()
                 a=a.toString()
-
                 val account:JSONArray = JSONArray(a)
+                val db:SQLiteDatabase = getDb()
+                clearAccountTable(db)
 
                 for (i in 0 until account.length()) {
                     val item = account.getJSONObject(i)
-                    val database:SQLiteDatabase = getDb()
-                    clearAccountTable(database)
-                    insertAccountToDb(database,item)
-                    println("done")
+                    insertAccountToDb(db,item)
                 }
-
-
-
-
+                //var cursor = db.rawQuery("select * from accountsAndAmounts", null)
+                //println(DatabaseUtils.dumpCursorToString(cursor))
+                //cursor.close()
             }
-
-
         })
-
     }
         
 
