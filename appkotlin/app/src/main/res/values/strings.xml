@@ -25,6 +25,7 @@
     <string name="button_5">5</string>
     <string name="tapez_votre_code_de_securite">Tapez votre code de sécurité</string>
     <string name="valider">Valider</string>
+    <string name="refresh">Refresh</string>
 
 
 </resources>

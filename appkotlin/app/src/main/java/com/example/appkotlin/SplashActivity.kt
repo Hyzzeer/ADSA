@@ -23,6 +23,7 @@ class SplashActivity : AppCompatActivity() {
         //setContentView(R.layout.activity_splash)
 
         val db: SQLiteDatabase = getDb()
+
         val pinUser:String? = getPinFromDb(db)
         if (pinUser==null){
             // navigate to login
