@@ -1,24 +1,24 @@
 # ADSA
-Application Development Security Android
+__Application Development Security Android__
 
-#TODO : 
+# TODO : 
  - LogIn page
  - Accounts
  - Sign Up page 
- - Use API : Recover information (name(=endpoint n1), accounts and values(=endpoint n2)) securely with TLS
+ - Use API : Recover information (name(=endpoint n1), accounts and values(=endpoint n2)) securely with _TLS_
 
-#IMPORTANT :
+# IMPORTANT :
  - App available offline
  - Access is restricted. User must be authenticated  
  - It must be impossible to recover API url, data and debugging information
 
 
-#Requirements ---
+# Requirements
 
 This application must be available offline. ✓
 A refresh button allows the user to update its accounts. ✓
 Access to the application is restricted ✓
-Exchanges with API must be secure ( with TLS) ✓
+Exchanges with API must be secure ( with _TLS_) ✓
 
 ##Explain how you ensure user is the right one starting the app
 
@@ -31,15 +31,15 @@ Ainsi nous sommes sûr que seul l'utilisateur peut regarder ses comptes.
 
 ##How do you securely save user's data on your phone ?
 
-Nous sauvegardons les données de l'utilisateur dans une base de donnée local à l'aide de la librairie SQLiteCipher. Celle ci est chiffré à l'aide du pin de l'utilisateur.
+Nous sauvegardons les données de l'utilisateur dans une base de donnée local à l'aide de la librairie _SQLiteCipher_. Celle ci est chiffré à l'aide du pin de l'utilisateur.
 Ainsi si un attaquant réussi à obtenir par, un quelconque moyen, la base de données, il sera obligé de procéder à une attaque par force brute afin de lire son contenu.
 
 Pour plus de sécurité, l'utilisateur a 3 essais lors de la saisie de son code pin. Dans le cas ou il échouerait à 3 reprises, la base de donnée est supprimée et l'utilisaeur devra se reconnecter en online.
 
-##How did you hide the API url ?
+## How did you hide the API url ?
 
 ???
 
-##Screenshots of your application
+## Screenshots of your application
 
 ???
