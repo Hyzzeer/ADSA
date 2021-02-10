@@ -76,43 +76,29 @@ class LoginActivity : AppCompatActivity() {
                     config.put("id", user.get("id"))
                     config.put("name", user.get("name"))
                     config.put("lastname", user.get("lastname"))
-                    // changer activity
+
                     setContentView(R.layout.activty_pin);
                 }
             }
         }
     }
 
-    fun onClickPinButton(v: View){
-        Log.i(TAG, "Login")
-        val button = v as Button // cast view en button
-        val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
+    fun onClickValidButton(v: View){
+        val password1 = inputPass.text.toString()
 
-        if (button.id == buttonDelete.id){
-            if ((pin.length>0) and (pin.length<=4)) {
-                radioArray[pin.length - 1].isChecked = false
-                pin = pin.slice(0 until pin.length - 1)
-            }
+        if ((8 <= password1.length) and (password1.length <= 20)) {
+            val database: SQLiteDatabase = getDb(password1)
+            initDb(database)
+            insertConfigToDb(database, config)
+            val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
         }
-        else if (button.id == buttonSubmit.id){
-            if (pin.length==4) {
-                val database: SQLiteDatabase = getDb(pin)
-                initDb(database)
-                insertConfigToDb(database, config)
-                val intent = Intent(this, SplashActivity::class.java)
-                startActivity(intent)
-            }
-            else{
-                pinMessage.text = "put 4 pins"
-            }
-        }
-        else if (!button.text.isNullOrEmpty()){
-            if ((pin.length>=0) and (pin.length<4)){
-                pin += button.text.toString()
-                radioArray[pin.length-1].isChecked = true
-            }
+        else{
+            pinMessage.text = "Le mot de passe doit comporter entre 8 et 20 caractères"
         }
     }
+
+
 
     ////////// API request functions //////////
 

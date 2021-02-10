@@ -38,7 +38,7 @@ class SplashActivity : AppCompatActivity() {
         // setContentView(R.layout.activty_pin);
         //}
 
-        //logout()
+
         if (!isDbExist()) {
             // navigate to login
             Log.i(TAG, "navigate to login")
@@ -63,65 +63,31 @@ class SplashActivity : AppCompatActivity() {
 
     ////////// On ck=lc //////////
 
-    fun onClickPinButton(v: View) {
-        Log.i(TAG, "Splash")
-        val button = v as Button // cast view en button
-        val radioArray = arrayOf(radioButton1, radioButton2, radioButton3, radioButton4)
+    fun onClickValidButton( v: View ) {
+        val password1 = inputPass.text.toString()
 
-        if (button.id == buttonDelete.id) {
-            if ((pin.length > 0) and (pin.length <= 4)) {
-                radioArray[pin.length - 1].isChecked = false
-                pin = pin.slice(0 until pin.length - 1)
+
+        if ((8 <= password1.length) and (password1.length <= 20)) {
+            try {
+                getDb(password1)
+                //val cursor: Cursor = db.rawQuery("select * from users", null)
+                //Log.i(TAG, DatabaseUtils.dumpCursorToString(cursor).toString())
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("pin", password1)
+                startActivity(intent)
+            } catch (err: SQLiteException) {
+                COUNT_MAX--
+                pinMessage.text = "Les mots de passes ne correspondent pas , il vous reste $COUNT_MAX essais"
             }
-        } else if (button.id == buttonSubmit.id) {
-            if (pin.length == 4) {
-                try {
-                    val db: SQLiteDatabase = getDb(pin)
-                    val cursor: Cursor = db.rawQuery("select * from users", null)
-                    Log.i(TAG, DatabaseUtils.dumpCursorToString(cursor).toString())
-                    val intent = Intent(this, HomeActivity::class.java)
-                    intent.putExtra("pin", pin)
-                    startActivity(intent)
-                }
-                catch(err:SQLiteException) {
-                    COUNT_MAX--
-                    pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
-                }
-                // val db: SQLiteDatabase = getDb(pin)
-                // val cursor: Cursor = db.rawQuery("select * from users", null)
-                // Log.i(TAG, DatabaseUtils.dumpCursorToString(cursor).toString())
-                // if (db.isOpen) {
-                    // val intent = Intent(this, HomeActivity::class.java)
-                    // intent.putExtra("pin", pin)
-                    // startActivity(intent)
-                // } else {
-                    // COUNT_MAX--
-                    // pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
-                // }
-                //val pinUser:String? = getPinFromDb(db)
-                //if (pin == pinUser){
-                // val intent = Intent(this, HomeActivity::class.java)
-                // startActivity(intent)
-                // }
-                // else {
-                // COUNT_MAX--
-                // pinMessage.text = "pin didn't match, il vous reste $COUNT_MAX essais"
-                // }
-                if (COUNT_MAX == 0) {
-                    logout()
-                    val intent = Intent(this, SplashActivity::class.java)
-                    startActivity(intent)
-                }
-            } else {
-                pinMessage.text = "put 4 pins"
-            }
-        } else if (!button.text.isNullOrEmpty()) {
-            if ((pin.length >= 0) and (pin.length < 4)) {
-                pin += button.text.toString()
-                radioArray[pin.length - 1].isChecked = true
+            if (COUNT_MAX == 0) {
+                logout()
+                val intent = Intent(this, SplashActivity::class.java)
+                startActivity(intent)
             }
         }
     }
+
+
 
     ////////// Database //////////
 
@@ -137,9 +103,6 @@ class SplashActivity : AppCompatActivity() {
         return SQLiteDatabase.openOrCreateDatabase(databaseFile, pin, null)
     }
 
-    private fun initDb(database: SQLiteDatabase) {
-        database.execSQL("create table if not exists users(id, name, lastname)")
-    }
 
     private fun logout() {
         SQLiteDatabase.loadLibs(this)
