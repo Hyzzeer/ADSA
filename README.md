@@ -42,4 +42,9 @@ Pour plus de sécurité, l'utilisateur a 3 essais lors de la saisie de son code 
 
 ## Screenshots of your application
 
-???
+
+![loginPage](./visuals/loginPage.png)
+
+![pinPage](./visuals/pinPage.png)
+
+![accountPage](./visuals/accountPage.png)
