@@ -4,6 +4,12 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'com.chrisney.enigma'
+
+enigma.enabled = true
+enigma.injectFakeKeys = true
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -20,7 +26,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
