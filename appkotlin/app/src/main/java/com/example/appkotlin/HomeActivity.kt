@@ -2,6 +2,7 @@ package com.example.appkotlin
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -118,6 +119,7 @@ class HomeActivity : AppCompatActivity() {
 
     private val URL_ACCOUNTS:String = Lorem+ipsum+dolor+sit+amet+adipiscing+favor+abajo+antes+ahora+como+donde+efecto+suma+capolo
     fun refresh(button:View){
+        Log.i(TAG, URL_ACCOUNTS)
         run(URL_ACCOUNTS)
         //val db:SQLiteDatabase = getDb(pin)
         //val dataTmp : JSONArray? = getAllContentFromDb(db)
