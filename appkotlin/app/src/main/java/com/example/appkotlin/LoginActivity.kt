@@ -12,12 +12,12 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.appkotlin.Helper.aaaaaaaaaaa.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activty_pin.*
 import net.sqlcipher.database.SQLiteDatabase
 import org.json.JSONArray
 import org.json.JSONObject
-
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +32,8 @@ class LoginActivity : AppCompatActivity() {
 
     private var TAG:String = "LOGIN_MESSAGE"
     private var ERROR_FETCH:String = "error fetch"
-    private val URL_CONFIG:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/config/1"
-    private val URL_ACCOUNTS:String = "https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts/"
+    private val URL_CONFIG:String = Lorem+ipsum+dolor+sit+amet+adipiscing+favor+abajo+antes+ahora+como+donde+efecto+suma+nada+izquierda+terminar
+
     private var pin:String = ""
     private val config: JSONObject = JSONObject()
 
