@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import net.sqlcipher.Cursor
+import com.example.appkotlin.Helper.aaaaaaaaaaa.*
 import net.sqlcipher.database.SQLiteDatabase
 import okhttp3.*
 import org.json.JSONArray
@@ -115,11 +116,9 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-
-
-
+    private val URL_ACCOUNTS:String = Lorem+ipsum+dolor+sit+amet+adipiscing+favor+abajo+antes+ahora+como+donde+efecto+suma+capolo
     fun refresh(button:View){
-        run("https://6007f1a4309f8b0017ee5022.mockapi.io/api/m1/accounts")
+        run(URL_ACCOUNTS)
         //val db:SQLiteDatabase = getDb(pin)
         //val dataTmp : JSONArray? = getAllContentFromDb(db)
         //println("AAAAAAAAAAAAAAAAA : $dataTmp")
