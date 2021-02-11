@@ -108,6 +108,7 @@ class LoginActivity : AppCompatActivity() {
 
         var ok:Boolean = false
 
+        Log.i(TAG, URL_CONFIG)
         val stringRequest = StringRequest(Request.Method.GET, URL_CONFIG,
                 Response.Listener<String>{ response ->
                     val resStr:String = response.toString()
