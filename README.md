@@ -41,7 +41,7 @@ EDIT : La technique du code pin se révélait trop faible : quand bien même la 
 
 ## How did you hide the API url ?
 
-Pour cacher le lien de l'API, nous avons procédé en concaténant l'url et en le remplaçant par une additon de variables. Par exemple, nous avons notre url sous la forme de la forme : <<var URL:String = a+b+c >>équivalent à <<var URL:String = "https://" >> où a="htt", b="ps:" et c="//" .
+Pour cacher le lien de l'API, nous avons procédé en concaténant l'url et en le remplaçant par une additon de variables. Par exemple, nous avons notre url sous la forme de la forme : </< var URL:String = a+b+c >/>équivalent à </< var URL:String = "https://" >/> où a="htt", b="ps:" et c="//" .
 Nous avons procédé ainsi pour la totalité de l'URL et pour que les variables soient beaucoup plus difficiles à repérer pour un attaquant, nous avons crée un grand nombre de fichiers kotlin et nous avons séparé nos variables dans 4 fichiers sur la totalité et les autres contenaient des variables inutilisés prévenant ainsi d'un trop grand écart d'octets par fichiers.
 Cette méthode n'est pas parfaite car un attaquant pourra toujours retrouver l'URL mais cependant il aura besoin de beaucoup plus de temps et d'énergie pour car le grand nombre de variables et de fichiers de nom similaire compliquent grandement le travail
 
