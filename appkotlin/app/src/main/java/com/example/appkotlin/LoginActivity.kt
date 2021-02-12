@@ -24,13 +24,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.i(TAG, "START")
 
     }
 
     ////////// Constantes //////////
 
-    private var TAG:String = "LOGIN_MESSAGE"
     private var ERROR_FETCH:String = "error fetch"
     private val URL_CONFIG:String = Lorem+ipsum+dolor+sit+amet+adipiscing+favor+abajo+antes+ahora+como+donde+efecto+suma+nada+izquierda+terminar
 
@@ -102,13 +100,11 @@ class LoginActivity : AppCompatActivity() {
 
     ////////// API request functions //////////
 
-    // check user credentials, return user:JSONObject if ok, else return null
     private fun checkCredentialsOnline(name:String, lastname:String, cb:(user:JSONObject?, err:VolleyError?)->Unit){
         val queue = Volley.newRequestQueue(this)
 
         var ok:Boolean = false
 
-        Log.i(TAG, URL_CONFIG)
         val stringRequest = StringRequest(Request.Method.GET, URL_CONFIG,
                 Response.Listener<String>{ response ->
                     val resStr:String = response.toString()
@@ -122,6 +118,5 @@ class LoginActivity : AppCompatActivity() {
                 })
 
         queue.add(stringRequest)
-        //queue.start()
     }
 }

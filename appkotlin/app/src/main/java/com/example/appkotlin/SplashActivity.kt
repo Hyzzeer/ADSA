@@ -22,33 +22,12 @@ import kotlin.math.log
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_splash)
-
-        //val db: SQLiteDatabase = getDb()
-        // val pinUser:String? = getPinFromDb(db)
-        // if (pinUser==null){
-        // navigate to login
-        // Log.i(TAG,"navigate to login")
-        // val intent = Intent(this, LoginActivity::class.java)
-        // startActivity(intent)
-        // }
-        // else {
-        // navigate to put your secret pin
-        // Log.i(TAG,"put your secret pin")
-        // setContentView(R.layout.activty_pin);
-        //}
 
 
         if (!isDbExist()) {
-            // navigate to login
-            Log.i(TAG, "navigate to login")
-
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         } else {
-            // navigate to put your secret pin
-            Log.i(TAG, "put your secret pin")
-
             setContentView(R.layout.activty_pin);
         }
 
@@ -57,8 +36,6 @@ class SplashActivity : AppCompatActivity() {
 
     ////////// OnClick functions //////////
 
-    private var TAG: String = "LOGIN_MESSAGE"
-    private var pin: String = ""
     private var COUNT_MAX: Int = 3
 
     ////////// On ck=lc //////////
@@ -70,8 +47,6 @@ class SplashActivity : AppCompatActivity() {
         if ((8 <= password1.length) and (password1.length <= 20)) {
             try {
                 getDb(password1)
-                //val cursor: Cursor = db.rawQuery("select * from users", null)
-                //Log.i(TAG, DatabaseUtils.dumpCursorToString(cursor).toString())
                 val intent = Intent(this, HomeActivity::class.java)
                 intent.putExtra("pin", password1)
                 startActivity(intent)

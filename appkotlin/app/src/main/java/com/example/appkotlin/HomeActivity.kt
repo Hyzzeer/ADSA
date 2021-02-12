@@ -110,9 +110,6 @@ class HomeActivity : AppCompatActivity() {
                         insertAccountToDb(db, item)
                     }
                 }
-                //var cursor = db.rawQuery("select * from accountsAndAmounts", null)
-                //println(DatabaseUtils.dumpCursorToString(cursor))
-                //cursor.close()
             }
         })
     }
@@ -121,19 +118,14 @@ class HomeActivity : AppCompatActivity() {
     fun refresh(button:View){
         Log.i(TAG, URL_ACCOUNTS)
         run(URL_ACCOUNTS)
-        //val db:SQLiteDatabase = getDb(pin)
-        //val dataTmp : JSONArray? = getAllContentFromDb(db)
-        //println("AAAAAAAAAAAAAAAAA : $dataTmp")
     }
 
     @SuppressLint("SetTextI18n")
     private fun displayAccountsTable(response : JSONArray?){
 
         Thread(Runnable {
-            // performing some dummy time taking operation
 
 
-            // try to touch View of UI thread
             this@HomeActivity.runOnUiThread(java.lang.Runnable {
                 scrollView1.removeAllViews()
             })
@@ -167,9 +159,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         Thread(Runnable {
-            // performing some dummy time taking operation
 
-            // try to touch View of UI thread
             this@HomeActivity.runOnUiThread(java.lang.Runnable {
                 scrollView1.addView(t)
             })
