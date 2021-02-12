@@ -12,6 +12,9 @@
 #   public *;
 #}
 
+-keep class com.example.appkotlin.LoginActivity
+-keep class com.example.appkotlin.HomeActivity
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
